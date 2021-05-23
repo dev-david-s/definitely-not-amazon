@@ -8,11 +8,21 @@ import Currency from 'react-currency-formatter';
 
 import CheckoutProduct from '../components/CheckoutProduct';
 import { useSession } from 'next-auth/client';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.stripe_public_key);
+
 function Checkout() {
 
     const items = useSelector(selectItems);
     const total = useSelector(selectTotal)
     const [session] = useSession();
+
+    const createCheckoutSession = () => {
+        const stripe = await stripePromise;
+
+
+    }
 
     return (
         <div className="bg-gray-100">
@@ -48,6 +58,8 @@ function Checkout() {
                                 <span className="font-bold"><Currency quantity={total} currency="USD" /></span>
                             </h2>
                             <button
+                                role="link"
+                                onClick={createCheckoutSession}
                                 disabled={!session}
                                 className={`button mt-2 ${!session && 'from-gray-300 to-gray-500 border-gray-200 text-gray-200 cursor-not-allowed'}`}>
                                 {!session ? 'Sign in to checkout' : 'Proceed to checkout'}
